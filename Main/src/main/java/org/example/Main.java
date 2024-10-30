@@ -1,11 +1,8 @@
 package org.example;
 
-// TODO 1: Implementar a classe Cliente com os atributos: ID, nome, email e telefone.
-// TODO 1: Criar método adicionarCliente(Cliente cliente) para adicionar um novo cliente.
-// TODO 2: Criar método listarClientes() para retornar uma lista com todos os clientes cadastrados.
 // TODO 3: Criar método atualizarCliente(int id, Cliente cliente) para atualizar os dados de um cliente com base no ID.
-// TODO 4: Criar método removerCliente(int id) para remover um cliente com base no ID.♠
-// TODO 5: Criar método buscarCliente(int id) para buscar um cliente pelo ID e retornar suas informações.
+// TODO 6: Criar método para recuperar cliente1
+
 
 import java.util.Scanner;
 
@@ -23,6 +20,7 @@ public class Main {
                         3 - Atualizar cliente
                         4 - Excluir cliente
                         5 - Buscar cliente
+                        6 - Recuperar cliente
                         0 - Sair
                         """);
                 int op = SC.nextInt();
@@ -41,6 +39,9 @@ public class Main {
                         break;
                     case 5:
                         ControllerCliente.buscarCliente();
+                        break;
+                    case 6:
+                        ControllerCliente.recuperarCliente();
                         break;
                     case 0:
                         System.out.println("Saindo do programa: ");
