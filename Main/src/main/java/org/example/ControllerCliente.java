@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-
 public class ControllerCliente {
     private static Scanner sc = new Scanner(System.in);
     private static ArrayList<Cliente> clienteList = new ArrayList<>();
-    private static Cliente cliente = new Cliente();
 
     //dados de objeto testes
     static {
@@ -70,12 +68,16 @@ public class ControllerCliente {
         try {
             System.out.print("Nome: ");
             String name = sc.nextLine();
+
             System.out.print("Email: ");
             String email = sc.nextLine();
+
             System.out.print("Telefone: ");
             String telefone = sc.nextLine();
-            cliente = new Cliente(gerarID(clienteList), name, email, telefone, true);
+
+            Cliente cliente = new Cliente(gerarID(clienteList), name, email, telefone, true);
             clienteList.add(cliente);
+
             System.out.println("Cliente cadastrado com sucesso!");
             System.out.println(cliente);
             System.out.println("\n enter para continuar");
@@ -86,11 +88,10 @@ public class ControllerCliente {
     }
 
     public static void buscarCliente() {
-        sc = new Scanner(System.in);
         try {
             System.out.print("Digite o ID do cliente: ");
             int id = sc.nextInt();
-            sc.nextLine(); // Limpa o buffer
+            sc.nextLine();
 
             if (id <= 0) {
                 System.out.println("ID deve ser maior que zero.");
@@ -101,18 +102,18 @@ public class ControllerCliente {
                 System.out.println("Enter para continuar...");
                 sc.nextLine();
                 return;
-            }if (!cliente.isAtivo()){
+            }
+            if (!cliente.isAtivo()) {
                 System.out.println("Cliente desativado");
                 System.out.println("Enter para continuar...");
                 sc.nextLine();
-            }else{
+            } else {
                 System.out.println("Cliente encotrado");
                 System.out.println(cliente);
                 System.out.println("Enter para continuar...");
                 sc.nextLine();
 
             }
-
         } catch (InputMismatchException e) {
             System.out.println("Erro: entrada inválida. Por favor, insira um número inteiro para o ID.");
         } catch (Exception e) {
@@ -122,49 +123,56 @@ public class ControllerCliente {
     }
 
 
-
     public static void excluirCliente() {
         try {
             System.out.println("Digite o ID do cliente: ");
             int id = sc.nextInt();
             sc.nextLine();
 
-            if (id > 0 && id <= clienteList.size()) {
-                Cliente cliente = clienteList.get(id - 1);
-                boolean ativado = true;
-                while (ativado) {
-                    System.out.printf("Você realmente deseja desativar ou excluir o cliente: %s?%n", cliente.getNome());
-                    System.out.println("""
-                            1 - Desativar cliente
-                            2 - Excluir cliente
-                            3 - cancelar
-                            """);
-                    int op = sc.nextInt();
+            if (id > 0) {
+                Cliente cliente = buscador(id);
+
+                if (cliente == null) {
+                    System.out.println("cliente não encontrado!");
+                    System.out.println("Enter para continuar...");
                     sc.nextLine();
-                    if (op == 1 || op == 2 || op == 3) {
-                        if (op == 1) {
-                            cliente.setAtivo(false);
-                            System.out.println("Cliente Desativado com sucesso!");
-                            System.out.println(cliente);
-                            System.out.println("Enter para continuar...");
-                            sc.nextLine();
-                            ativado = false;
-                        } if(op == 2 ){
-                            clienteList.remove(cliente);
-                            System.out.println("Cliente excluido com sucesso!");
-                            System.out.println(cliente);
-                            System.out.println("Enter para continuar...");
-                            sc.nextLine();
-                            ativado = false;
+
+                } else {
+                    boolean ativado = true;
+                    while (ativado) {
+                        System.out.printf("Você realmente deseja desativar ou excluir o cliente: %s?%n", cliente.getNome());
+                        System.out.println("""
+                                1 - Desativar cliente
+                                2 - Excluir cliente
+                                3 - cancelar
+                                """);
+                        int op = sc.nextInt();
+                        sc.nextLine();
+                        if (op == 1 || op == 2 || op == 3) {
+                            if (op == 1) {
+                                cliente.setAtivo(false);
+                                System.out.println("Cliente Desativado com sucesso!");
+                                System.out.println(cliente);
+                                System.out.println("Enter para continuar...");
+                                sc.nextLine();
+                                ativado = false;
+                            }
+                            if (op == 2) {
+                                clienteList.remove(cliente);
+                                System.out.println("Cliente excluido com sucesso!");
+                                System.out.println(cliente);
+                                System.out.println("Enter para continuar...");
+                                sc.nextLine();
+                                ativado = false;
+                            } else {
+                                System.out.println("Cancelado com sucesso!");
+                                System.out.println("Enter para continuar...");
+                                sc.nextLine();
+                                ativado = false;
+                            }
+                        } else {
+                            System.out.println("Opção inválida. Por favor, escolha 1 ou 2.");
                         }
-                        else {
-                            System.out.println("Cancelado com sucesso!");
-                            System.out.println("Enter para continuar...");
-                            sc.nextLine();
-                            ativado = false;
-                        }
-                    } else {
-                        System.out.println("Opção inválida. Por favor, escolha 1 ou 2.");
                     }
                 }
 
@@ -179,11 +187,61 @@ public class ControllerCliente {
     }
 
     public static void atualizarCliente() {
+        try {
+            System.out.println("Digite o id do cliente: ");
+            int id = sc.nextInt();
+            sc.nextLine();
+            Cliente cliente = buscador(id);
+            if (cliente == null) {
+                System.out.println("Cliente não encontrado");
+                System.out.println("Enter para continuar...");
+                sc.nextLine();
+                return;
+            }
 
+            System.out.println("""
+                    Deseja atualizar qual dado?
+                    1 - Nome 
+                    2 - Email
+                    3 - Telefone
+                    0 - cancelar
+                    """);
+            int op = sc.nextInt();
+            sc.nextLine();
+            switch (op) {
+                case 1:
+                    System.out.print("Digite o novo nome: ");
+                    cliente.setNome(sc.nextLine());
+                    System.out.println("Nome atualizado com sucesso!");
+                    break;
+                case 2:
+                    System.out.print("Digite o novo email: ");
+                    cliente.setEmail(sc.nextLine());
+                    System.out.println("Email atualizado com sucesso!");
+                    break;
+                case 3:
+                    System.out.print("Digite o novo telefone: ");
+                    cliente.setTelefone(sc.nextLine());
+                    System.out.println("Telefone atualizado com sucesso!");
+                    break;
+                case 0:
+                    System.out.println("Retornando");
+                    System.out.println("Enter para continuar...");
+                    sc.nextLine();
+                    break;
+                default:
+                    System.out.println("Opção invalida tenta novamente");
+                    break;
+            }
+        } catch (InputMismatchException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Ocorreu um erro inesperado.");
+        }
     }
 
     public static void listarCliente() {
-        try{
+        try {
             System.out.println("""
                     Qual lista deseja?
                     1 - Clientes ativos
@@ -192,30 +250,66 @@ public class ControllerCliente {
                     """);
             int op = sc.nextInt();
             sc.nextLine();
-            if(op == 1){
-                for (Cliente cliente : clienteList) {
-                    if (cliente.isAtivo()) {
+
+            switch (op) {
+                case 1:
+                    for (Cliente cliente : clienteList) {
+                        if (cliente.isAtivo()) {
+                            System.out.println(cliente);
+                        }
+                    }
+                    break;
+                case 2:
+                    for (Cliente cliente : clienteList) {
+                        if (!cliente.isAtivo()) {
+                            System.out.println(cliente);
+                        }
+                    }
+                    break;
+                case 3:
+                    for (Cliente cliente : clienteList) {
                         System.out.println(cliente);
                     }
-                }
-            }else if(op == 2){
-                for (Cliente cliente : clienteList) {
-                    if (!cliente.isAtivo()) {
-                        System.out.println(cliente);
-                    }
-                }
-            }else{
-                for (Cliente cliente : clienteList) {
-                    System.out.println(cliente);
-                }
+                    break;
+                default:
+                    System.out.println("Opção invalida");
+                    break;
             }
-        }catch (InputMismatchException e) {
+        } catch (InputMismatchException e) {
             e.printStackTrace();
         }
     }
 
     public static void recuperarCliente() {
-
+        try {
+            System.out.print("Digite o ID do cliente: ");
+            int id = sc.nextInt();
+            sc.nextLine();
+            Cliente cliente = buscador(id);
+            if (cliente == null) {
+                System.out.println("Cliente não encontrado!");
+            } else if (!cliente.isAtivo()) {
+                System.out.println("Deseja ativa o cliente: " + cliente.getNome());
+                System.out.println("""
+                        1 - Sim
+                        2 - Não
+                        """);
+                int op = sc.nextInt();
+                if (op == 1) {
+                    cliente.setAtivo(true);
+                    System.out.println("Cliente ativo com sucesso!");
+                    System.out.println(cliente);
+                    System.out.println("Enter para continuar...");
+                    sc.nextLine();
+                } else {
+                    System.out.println("Voltando....");
+                }
+            }
+        } catch (InputMismatchException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Ocorreu um erro inesperado.");
+        }
     }
 
     public static int gerarID(ArrayList<Cliente> clientes) {
@@ -226,11 +320,25 @@ public class ControllerCliente {
     }
 
     public static Cliente buscador(int id) {
-        for(Cliente c : clienteList) {
-            if (c.getId() == id) {
-                return c;
+        for (Cliente cliente : clienteList) {
+            if (cliente.getId() == id) {
+                return cliente;
             }
         }
-            return null;
+        return null;
+    }
+
+    public static void limpaTela() {
+        try {
+            String sistema = System.getProperty("os.name");
+
+            if (sistema.contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao limpar o terminal: " + e.getMessage());
+        }
     }
 }

@@ -1,9 +1,5 @@
 package org.example;
 
-// TODO 3: Criar método atualizarCliente(int id, Cliente cliente) para atualizar os dados de um cliente com base no ID.
-// TODO 6: Criar método para recuperar cliente1
-
-
 import java.util.Scanner;
 
 public class Main {
@@ -35,6 +31,7 @@ public class Main {
                         ControllerCliente.atualizarCliente();
                         break;
                     case 4:
+                        //FIXEME CANCELADO COM SUCESSO?
                         ControllerCliente.excluirCliente();
                         break;
                     case 5:
@@ -54,6 +51,10 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("Erro: " + e.getMessage());
             }
+            System.out.println("Enter para continuar: ");
+            SC.nextLine();
+            SC.nextLine();
+            ControllerCliente.limpaTela();
         }
     }
 
